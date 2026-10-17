@@ -1,0 +1,48 @@
+# Service configuration. ${VAR} in values is replaced from the environment after the YAML is parsed,
+# so secrets may contain any characters. A variable that is unset or empty keeps the default.
+log:
+  level: ${LOG_LEVEL}
+  format: json
+
+http:
+  addr: ":8080"
+  admin_addr: ":9090"   # /metrics, keep it off the public network
+  read_header_timeout: 2s
+  read_timeout: 5s
+  write_timeout: 10s
+  idle_timeout: 60s
+  shutdown_timeout: 15s
+
+postgres:
+  dsn: ${POSTGRES_DSN}
+  max_conns: 20
+  min_conns: 2
+  migrate_on_start: false
+
+kafka:
+  brokers: ["${KAFKA_BROKERS}"]   # comma-separated list is allowed
+  topic: companies.events
+  client_id: companies-service
+  tls:
+    enabled: ${KAFKA_TLS_ENABLED}
+    ca_file: ${KAFKA_TLS_CA_FILE}
+    cert_file: ${KAFKA_TLS_CERT_FILE}
+    key_file: ${KAFKA_TLS_KEY_FILE}
+  sasl:
+    mechanism: ${KAFKA_SASL_MECHANISM}   # PLAIN, SCRAM-SHA-256, SCRAM-SHA-512; empty disables SASL
+    username: ${KAFKA_SASL_USERNAME}
+    password: ${KAFKA_SASL_PASSWORD}
+
+outbox:
+  poll_interval: 500ms
+  batch_size: 100
+  publish_timeout: 10s
+  backlog_interval: 15s
+
+jwt:
+  algorithm: ${JWT_ALGORITHM}
+  secret: ${JWT_SECRET}
+  public_key_file: ${JWT_PUBLIC_KEY_FILE}
+  issuer: ${JWT_ISSUER}
+  audience: ${JWT_AUDIENCE}
+  leeway: 30s

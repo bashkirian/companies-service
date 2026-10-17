@@ -1,0 +1,21 @@
+# Config for running the binary on the host against `make infra`.
+log:
+  level: debug
+  format: console
+
+http:
+  addr: ":8080"
+
+postgres:
+  dsn: postgres://companies:companies@localhost:5432/companies?sslmode=disable
+  migrate_on_start: true
+
+kafka:
+  brokers: ["localhost:9094"]
+  topic: companies.events
+
+jwt:
+  algorithm: HS256
+  secret: local-dev-secret-change-me-32-bytes-min
+  issuer: companies-local
+  audience: companies
